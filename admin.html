@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin · Boda María & Roberto</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>body{background:var(--deep)}</style>
+</head>
+<body>
+
+<div class="admin-wrap">
+
+  <div class="admin-card admin-login" id="login-box">
+    <h1>Panel de administración</h1>
+    <p>Ingresa la clave de administrador para continuar.</p>
+    <input type="password" id="login-key" placeholder="Clave de administrador">
+    <button class="button button-dark" id="btn-login">Entrar</button>
+    <p class="form-status" id="login-status"></p>
+  </div>
+
+  <div id="panel" hidden>
+    <div class="admin-card">
+      <h2>Agregar invitado</h2>
+      <form class="admin-form" id="form-crear">
+        <label>Nombre completo
+          <input type="text" name="nombre" required placeholder="Ej. Ana Torres">
+        </label>
+        <label>Cupos asignados
+          <input type="number" name="cupos" min="1" value="1" required>
+        </label>
+        <button class="button button-dark" type="submit">Generar link</button>
+      </form>
+      <p class="form-status" id="crear-status"></p>
+      <div id="nuevo-link-box" hidden>
+        <p style="color:var(--gold-light);margin-top:1rem">Link generado:</p>
+        <div class="link-copy">
+          <input type="text" id="nuevo-link" readonly>
+          <button id="btn-copiar-nuevo">Copiar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-card">
+      <h2>Invitados</h2>
+      <p id="resumen-cupos" style="color:var(--soft)"></p>
+      <div style="overflow-x:auto">
+      <table class="admin-table">
+        <thead>
+          <tr><th>Nombre</th><th>Cupos asig.</th><th>Estado</th><th>Cupos conf.</th><th>Mensaje</th><th>Link</th><th></th></tr>
+        </thead>
+        <tbody id="tabla-invitados"></tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

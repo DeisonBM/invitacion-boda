@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Invitación de boda de María y Roberto"><title>María & Roberto · Nuestra boda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;600&family=Alex+Brush&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="sobre-overlay" role="button" tabindex="0" aria-label="Abrir invitación">
+    <div class="env-tri env-top"></div><div class="env-tri env-bottom"></div><div class="env-tri env-left"></div><div class="env-tri env-right"></div><div class="env-seams"></div>
+    <div class="env-nombres"><span>María</span><b>&</b><span>Roberto</span></div>
+    <div class="env-sello"><img src="img/sello-cera-mr.png" alt="Sello de María y Roberto"></div>
+    <div class="env-pista"><span>Una invitación para ti</span><strong>Haz clic para abrir</strong></div>
+  </div>
+  <audio id="wedding-music" loop preload="auto" src="music/musica.mp3"></audio>
+  <button class="music-toggle" id="music-toggle" aria-label="Reproducir música"><span>♫</span><span id="music-label">Música</span></button>
+  <div class="sparkles-bg" aria-hidden="true"></div>
+  <div class="content-layer" id="content-layer">
+    <header class="hero" id="inicio"><img class="botanical botanical-tl" src="img/botanica-superior-izq.png" alt=""><img class="botanical botanical-tr" src="img/botanica-superior-der.png" alt=""><img class="botanical botanical-br" src="img/botanica-inferior-der.png" alt=""><div class="hero-content reveal"><h1>María <span>&</span> Roberto</h1><p class="hero-date">19 · 09 · 2026</p><p class="hero-place">Ceremonia 6:00 pm · Recepción 8:00 pm</p><a class="button button-dark" href="#historia">Descubrir nuestra historia</a></div><a class="scroll-cue" href="#historia" aria-label="Desplazar hacia abajo">↓</a></header>
+    <nav class="nav" aria-label="Navegación principal"><a href="#inicio" class="nav-brand">M <i>&</i> R</a><div class="nav-links"><a href="#historia">Historia</a><a href="#celebracion">Celebración</a><a href="#galeria">Galería</a><a href="#rsvp">RSVP</a></div><a class="nav-cta" href="#rsvp">Confirmar asistencia</a></nav>
+    <main>
+      <section class="intro section reveal" id="historia"><p class="eyebrow">El comienzo de todo</p><h2>Una historia que<br><em>queremos compartir.</em></h2><div class="story-grid"><div class="story-photo"><img src="img/foto-01.jpg" alt="María y Roberto juntos"><span>Nuestra historia</span></div><div class="story-copy"><p class="dropcap">Nos conocimos por casualidad y, desde aquel primer café, la vida se ha sentido como una colección de pequeños momentos extraordinarios.</p><p>Hoy queremos celebrar el amor que elegimos cada día, rodeados de las personas que han hecho nuestro camino más bonito.</p><p class="signature">Con cariño,<br><strong>María & Roberto</strong></p></div></div></section>
+      <section class="countdown-section section reveal"><p class="eyebrow">La cuenta regresiva comienza</p><div class="countdown" id="countdown"><div><strong data-unit="days">000</strong><span>Días</span></div><i>:</i><div><strong data-unit="hours">00</strong><span>Horas</span></div><i>:</i><div><strong data-unit="minutes">00</strong><span>Minutos</span></div><i>:</i><div><strong data-unit="seconds">00</strong><span>Segundos</span></div></div></section>
+      <section class="events section" id="celebracion"><div class="section-heading reveal"><p class="eyebrow">El gran día</p><h2>Ceremonia & recepción</h2></div><div class="event-grid"><article class="event-card reveal"><span class="event-number">01</span><h3>Ceremonia religiosa</h3><p class="event-time">6:00 pm</p><p>Catedral de San Francisco de Asís</p><a href="#ubicacion">Ver ubicación →</a></article><article class="event-card event-card-accent reveal"><span class="event-number">02</span><h3>Recepción</h3><p class="event-time">8:00 pm</p><p>Salón de Eventos Eucalipto</p><a href="#ubicacion">Ver ubicación →</a></article></div></section>
+      <section class="location section reveal" id="ubicacion"><div><p class="eyebrow">Encuéntranos</p><h2>Un lugar especial<br>para un día especial.</h2><p>Hemos elegido dos espacios llenos de historia para compartir nuestra celebración.</p><a class="button button-outline" href="https://maps.google.com/?q=Catedral+de+San+Francisco+de+Asis" target="_blank" rel="noreferrer">Abrir en Google Maps ↗</a></div><div class="map-card"><span>19 · 09</span><div class="map-pin">⌖</div><small>Salón de Eventos Eucalipto</small></div></section>
+      <section class="gallery section" id="galeria"><div class="section-heading reveal"><p class="eyebrow">Nuestros momentos</p><h2>Un poco de nosotros</h2></div><div class="gallery-grid"><img class="wide reveal" src="img/foto-02.jpg" alt="Momento de la pareja"><img class="tall reveal" src="img/foto-03.jpg" alt="Retrato de la pareja"><img class="soft reveal" src="img/foto-04.jpg" alt="Recuerdo de María y Roberto"><img class="wide reveal" src="img/novia-damas.png" alt="La novia con sus damas"></div></section>
+      <section class="details section reveal"><div class="detail"><span class="detail-icon">✦</span><h3>Código de vestimenta</h3><p>Ellas: vestido largo.<br>Ellos: guayabera.</p></div><div class="detail"><span class="detail-icon">♧</span><h3>Regalo</h3><p>Tu presencia es nuestro mejor regalo. Si deseas acompañarnos con algo más, será en forma de lluvia de sobres.</p></div><div class="detail"><span class="detail-icon">⌁</span><h3>Información importante</h3><p>Te recomendamos llegar 20 minutos antes de la ceremonia.</p></div></section>
+      <section class="faq section reveal"><div class="section-heading"><p class="eyebrow">Queremos ayudarte</p><h2>Preguntas frecuentes</h2></div><div class="faq-list"><details><summary>¿Puedo llevar acompañante?</summary><p>Tu invitación indicará el número de lugares reservados. Si tienes dudas, escríbenos.</p></details><details><summary>¿Cómo confirmo mi asistencia?</summary><p>Usa el botón "Confirmar asistencia" más abajo e indica cuántos de tus cupos asignados usarás.</p></details><details><summary>¿Cuál es el código de vestimenta?</summary><p>Vestido largo para ellas y guayabera para ellos.</p></details></div></section>
+      <section class="rsvp section reveal" id="rsvp"><img class="botanical botanical-bl" src="img/botanica-inferior-izq.png" alt=""><div class="rsvp-inner">
+        <p class="eyebrow">Tu lugar está reservado</p><h2>¿Nos acompañas?</h2>
+        <div id="rsvp-info" class="rsvp-info">
+          <p id="rsvp-guest-name">Cargando invitación…</p>
+          <p id="rsvp-cupos"></p>
+          <p id="rsvp-estado" hidden></p>
+        </div>
+        <button id="btn-abrir-rsvp" class="button button-dark" hidden>Confirmar asistencia</button>
+      </div></section>
+      <section class="thanks section reveal"><p class="eyebrow">Gracias por ser parte</p><h2>Nos vemos el<br><em>19 de septiembre.</em></h2><p>Con amor, María & Roberto</p></section>
+    </main><footer><p>María <i>&</i> Roberto · 19.09.2026</p><a href="#inicio">Volver arriba ↑</a></footer>
+  </div>
+
+  <div class="modal-overlay" id="rsvp-modal" hidden>
+    <div class="modal-box">
+      <button class="modal-close" id="modal-close" aria-label="Cerrar">×</button>
+      <p class="eyebrow">Confirmación</p>
+      <h3>¿Nos acompañas?</h3>
+      <form id="rsvp-form">
+        <label>¿Asistirás?
+          <select name="asistencia" id="rsvp-asistencia" required>
+            <option value="">Selecciona una opción</option>
+            <option value="Si">Sí, con mucho gusto ahí estaré</option>
+            <option value="No">Lo siento, no podré asistir</option>
+          </select>
+        </label>
+        <div id="cupos-wrap">
+          <label>¿Cuántos de tus <span id="cupos-max">0</span> cupos asignados usarás?
+            <input type="number" name="cuposUsados" id="rsvp-cupos-input" min="1" value="1">
+          </label>
+        </div>
+        <label>Mensaje (opcional)
+          <textarea name="mensaje" rows="3" placeholder="Déjanos un mensaje"></textarea>
+        </label>
+        <button class="button button-dark" type="submit">Enviar confirmación</button>
+        <p class="form-status" id="form-status" role="status"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+</body></html>
