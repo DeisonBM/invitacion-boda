@@ -240,7 +240,7 @@ img {
     text-align: center;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(#0a171099, #0a1710cc), url('../img/foto-02.jpg') center/cover no-repeat;
+    background: linear-gradient(#0a171099, #0a1710cc), url('../img/foto-02.webp') center/cover no-repeat;
     padding: 20px
 }
 
