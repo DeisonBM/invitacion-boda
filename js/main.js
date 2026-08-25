@@ -21,6 +21,8 @@ const cuposWrap=document.querySelector('#cupos-wrap');
 const cuposMax=document.querySelector('#cupos-max');
 const cuposInput=document.querySelector('#rsvp-cupos-input');
 const formStatus=document.querySelector('#form-status');
+const btnEnviarRsvp=rsvpForm?.querySelector('button[type="submit"]');
+const textoOriginalBoton=btnEnviarRsvp?.textContent||'Enviar confirmación';
 
 let guestData=null;
 
@@ -42,12 +44,16 @@ async function cargarInvitado(){
     if(data.yaConfirmo && rsvpEstado){
       rsvpEstado.hidden=false;
       rsvpEstado.textContent=data.asistencia==='Si'
-        ? `Ya confirmaste: asistirás con ${data.cuposConfirmados} cupo(s).`
-        : 'Ya confirmaste que no podrás asistir.';
+        ? `Ya confirmaste: asistirás con ${data.cuposConfirmados} cupo(s). ¡Gracias!`
+        : 'Ya confirmaste que no podrás asistir. Gracias por avisarnos.';
     }
     if(cuposMax)cuposMax.textContent=data.cuposAsignados;
     if(cuposInput)cuposInput.max=data.cuposAsignados;
-    btnAbrirRsvp?.removeAttribute('hidden');
+    if(data.yaConfirmo){
+      btnAbrirRsvp?.setAttribute('hidden','');
+    }else{
+      btnAbrirRsvp?.removeAttribute('hidden');
+    }
   }catch(err){
     if(rsvpGuestName)rsvpGuestName.textContent='Ocurrió un error al cargar tu invitación.';
   }
@@ -61,6 +67,12 @@ rsvpModal?.addEventListener('click',e=>{if(e.target===rsvpModal)rsvpModal.setAtt
 rsvpAsistencia?.addEventListener('change',()=>{
   if(cuposWrap)cuposWrap.style.display=rsvpAsistencia.value==='No'?'none':'block';
 });
+
+function bloquearBoton(bloqueado,texto){
+  if(!btnEnviarRsvp)return;
+  btnEnviarRsvp.disabled=bloqueado;
+  btnEnviarRsvp.textContent=texto;
+}
 
 rsvpForm?.addEventListener('submit',async event=>{
   event.preventDefault();
@@ -76,7 +88,11 @@ rsvpForm?.addEventListener('submit',async event=>{
     cuposUsados:data.get('cuposUsados'),
     mensaje:data.get('mensaje')||''
   };
-  if(formStatus)formStatus.textContent='Enviando…';
+
+  // Respuesta instantánea al usuario: se bloquea el botón de inmediato, sin esperar al servidor
+  bloquearBoton(true,'Enviando…');
+  if(formStatus)formStatus.textContent='';
+
   try{
     const res=await fetch(CONFIG.SCRIPT_URL,{
       method:'POST',
@@ -86,11 +102,13 @@ rsvpForm?.addEventListener('submit',async event=>{
     const result=await res.json();
     if(result.ok){
       if(formStatus)formStatus.textContent='¡Gracias! Tu confirmación fue recibida.';
-      setTimeout(()=>{rsvpModal?.setAttribute('hidden','');cargarInvitado()},1400);
+      setTimeout(()=>{rsvpModal?.setAttribute('hidden','');cargarInvitado()},500);
     }else{
       if(formStatus)formStatus.textContent=result.error||'Ocurrió un error, intenta de nuevo.';
+      bloquearBoton(false,textoOriginalBoton);
     }
   }catch(err){
     if(formStatus)formStatus.textContent='Ocurrió un error de conexión, intenta de nuevo.';
+    bloquearBoton(false,textoOriginalBoton);
   }
 });
