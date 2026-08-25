@@ -591,7 +591,7 @@ footer i {
     min-height: 290px;
     display: grid;
     place-items: center;
-    background: linear-gradient(#0a171077, #0a1710aa), url('../img/foto-04.jpg') center/cover;
+    background: linear-gradient(#0a171077, #0a1710aa), url('../img/foto-04..webp') center/cover;
     border: 1px solid #f3e3a155;
     position: relative;
     color: var(--gold-light);
@@ -669,7 +669,7 @@ footer i {
 .rsvp {
     max-width: none;
     position: relative;
-    background: linear-gradient(#0a1710bb, #0a1710dd), url('../img/foto-05.jpg') center/cover
+    background: linear-gradient(#0a1710bb, #0a1710dd), url('../img/foto-05.webp') center/cover
 }
 
 .rsvp-inner {
