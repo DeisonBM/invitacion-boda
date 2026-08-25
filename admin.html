@@ -1,63 +1,167 @@
 <!doctype html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panel Admin · Boda María & Roberto</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
-<style>body{background:var(--deep)}</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="img/icono.png">
+  <title>Panel Admin · Boda María & Roberto</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,600&family=Montserrat:wght@300;400;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    body {
+      background: var(--deep)
+    }
+  </style>
 </head>
+
 <body>
+  <div class="admin-wrap">
+    <div class="admin-card admin-login" id="login-box">
+      <h1>Panel de administración</h1>
+      <p>Ingresa la clave de administrador para continuar.</p>
+      <input type="password" id="login-key" placeholder="Clave de administrador">
+      <button class="button button-dark" id="btn-login">Entrar</button>
+      <p class="form-status" id="login-status"></p>
+    </div>
 
-<div class="admin-wrap">
+    <div id="panel" hidden>
 
-  <div class="admin-card admin-login" id="login-box">
-    <h1>Panel de administración</h1>
-    <p>Ingresa la clave de administrador para continuar.</p>
-    <input type="password" id="login-key" placeholder="Clave de administrador">
-    <button class="button button-dark" id="btn-login">Entrar</button>
-    <p class="form-status" id="login-status"></p>
-  </div>
-
-  <div id="panel" hidden>
-    <div class="admin-card">
-      <h2>Agregar invitado</h2>
-      <form class="admin-form" id="form-crear">
-        <label>Nombre completo
-          <input type="text" name="nombre" required placeholder="Ej. Ana Torres">
-        </label>
-        <label>Cupos asignados
-          <input type="number" name="cupos" min="1" value="1" required>
-        </label>
-        <button class="button button-dark" type="submit">Generar link</button>
-      </form>
-      <p class="form-status" id="crear-status"></p>
-      <div id="nuevo-link-box" hidden>
-        <p style="color:var(--gold-light);margin-top:1rem">Link generado:</p>
-        <div class="link-copy">
-          <input type="text" id="nuevo-link" readonly>
-          <button id="btn-copiar-nuevo">Copiar</button>
+      <div class="admin-header">
+        <div>
+          <h1>Panel de administración</h1>
+          <p class="admin-subtitle">Boda María B & Roberto · 19.09.2026</p>
+        </div>
+        <div class="admin-header-actions">
+          <button class="button button-outline" id="btn-exportar">Exportar Excel</button>
+          <button class="button button-outline" id="btn-logout">Cerrar sesión</button>
         </div>
       </div>
-    </div>
 
-    <div class="admin-card">
-      <h2>Invitados</h2>
-      <p id="resumen-cupos" style="color:var(--soft)"></p>
-      <div style="overflow-x:auto">
-      <table class="admin-table">
-        <thead>
-          <tr><th>Nombre</th><th>Cupos asig.</th><th>Estado</th><th>Cupos conf.</th><th>Mensaje</th><th>Link</th><th></th></tr>
-        </thead>
-        <tbody id="tabla-invitados"></tbody>
-      </table>
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="stat-total">0</span>
+          <span class="stat-label">Invitados</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="stat-cupos">0</span>
+          <span class="stat-label">Cupos asignados</span>
+        </div>
+        <div class="stat-card stat-si">
+          <span class="stat-value" id="stat-si">0</span>
+          <span class="stat-label">Confirmaron sí</span>
+        </div>
+        <div class="stat-card stat-no">
+          <span class="stat-value" id="stat-no">0</span>
+          <span class="stat-label">No asisten</span>
+        </div>
+        <div class="stat-card stat-pendiente">
+          <span class="stat-value" id="stat-pendiente">0</span>
+          <span class="stat-label">Pendientes</span>
+        </div>
       </div>
+
+      <div class="admin-card">
+        <h2>Agregar invitado</h2>
+        <form class="admin-form" id="form-crear">
+          <label>Nombre completo
+            <input type="text" name="nombre" required placeholder="Ej. Ana Torres">
+          </label>
+          <label>Cupos asignados
+            <input type="number" name="cupos" min="1" value="1" required>
+          </label>
+          <button class="button button-dark" type="submit">Generar link</button>
+        </form>
+        <p class="form-status" id="crear-status"></p>
+        <div id="nuevo-link-box" hidden>
+          <p style="color:var(--gold-light);margin-top:1rem">Link generado:</p>
+          <div class="link-copy">
+            <input type="text" id="nuevo-link" readonly>
+            <button id="btn-copiar-nuevo" class="btn-copy">Copiar</button>
+            <button id="btn-compartir-nuevo" class="btn-share">Compartir</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h2>Importar invitados masivamente</h2>
+
+        <div class="import-tabs">
+          <button type="button" class="import-tab active" data-tab="excel">Subir Excel</button>
+          <button type="button" class="import-tab" data-tab="texto">Pegar lista</button>
+        </div>
+
+        <div id="import-panel-excel" class="import-panel">
+          <p style="color:var(--soft);font-size:.85rem">
+            Sube un archivo <strong>.xlsx</strong> o <strong>.csv</strong> con dos columnas: la primera con el
+            <strong>nombre</strong> del invitado y la segunda con los <strong>cupos</strong>. La primera fila puede ser
+            encabezado (Nombre, Cupos) o ya venir con datos.
+          </p>
+          <input type="file" id="import-file" accept=".xlsx,.xls,.csv">
+          <div id="import-preview" hidden>
+            <p style="color:var(--gold-light);margin-top:1rem">Vista previa (<span id="import-preview-count">0</span>
+              invitados detectados):</p>
+            <div id="import-preview-lista" class="import-lista import-preview-lista"></div>
+          </div>
+        </div>
+
+        <div id="import-panel-texto" class="import-panel" hidden>
+          <p style="color:var(--soft);font-size:.85rem">
+            Pega tu lista, un invitado por línea, con el formato <strong>Nombre, Cupos</strong>.<br>
+            Ejemplo:<br>
+            <code style="color:var(--gold-light)">Ana Torres, 2<br>Juan Pérez, 1<br>Familia Gómez, 4</code>
+          </p>
+          <textarea id="import-textarea" rows="6"
+            placeholder="Ana Torres, 2&#10;Juan Pérez, 1&#10;Familia Gómez, 4"></textarea>
+        </div>
+
+        <button class="button button-dark" id="btn-importar" type="button">Importar lista</button>
+        <p class="form-status" id="import-status"></p>
+        <div id="import-resultados" hidden>
+          <p style="color:var(--gold-light);margin-top:1rem">Invitados creados, listos para compartir:</p>
+          <div id="import-lista" class="import-lista"></div>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h2>Invitados</h2>
+
+        <div class="table-toolbar">
+          <input type="text" id="buscar-invitado" placeholder="Buscar por nombre…">
+          <div class="filter-chips">
+            <button class="filter-chip active" data-filter="todos">Todos</button>
+            <button class="filter-chip" data-filter="Si">Confirmaron</button>
+            <button class="filter-chip" data-filter="No">No asisten</button>
+            <button class="filter-chip" data-filter="pendiente">Pendientes</button>
+          </div>
+        </div>
+
+        <p id="resumen-cupos" style="color:var(--soft)"></p>
+        <div style="overflow-x:auto">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Cupos asig.</th>
+                <th>Estado</th>
+                <th>Cupos conf.</th>
+                <th>Mensaje</th>
+                <th>Link</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tabla-invitados"></tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </div>
-
-</div>
-
-<script src="js/config.js"></script>
-<script src="js/admin.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
 </body>
+
 </html>
