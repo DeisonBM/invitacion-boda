@@ -53,24 +53,52 @@ function escapeHtml(str) {
 }
 
 /* ---------------- Compartir / Copiar ---------------- */
+async function copiarAlPortapapeles(texto) {
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(texto);
+      return true;
+    } catch (err) { /* cae al fallback */ }
+  }
+  // Fallback para navegadores/webviews sin Clipboard API o sin permiso
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = texto;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch (err) {
+    return false;
+  }
+}
+
 async function compartirLink(link, nombre) {
   const texto = `¡Hola${nombre ? ' ' + nombre : ''}! Aquí está tu invitación a la boda de María B & Roberto:`;
   if (navigator.share) {
     try {
       await navigator.share({ title: 'Invitación de boda', text: texto, url: link });
-    } catch (err) {}
-  } else {
-    await navigator.clipboard.writeText(`${texto} ${link}`);
-    alert('Tu navegador no permite compartir directamente. El link se copió al portapapeles.');
+      return;
+    } catch (err) {
+      if (err?.name === 'AbortError') return; // usuario canceló, no es error
+    }
   }
+  const copiado = await copiarAlPortapapeles(`${texto} ${link}`);
+  alert(copiado
+    ? 'Tu navegador no permite compartir directamente. El link se copió al portapapeles.'
+    : 'No se pudo copiar automáticamente. Copia el link manualmente: ' + link);
 }
 
 function bindLinkButtons(scopeEl) {
   scopeEl.querySelectorAll('.btn-copy').forEach(btn => {
-    btn.addEventListener('click', () => {
-      navigator.clipboard.writeText(btn.dataset.link);
+    btn.addEventListener('click', async () => {
       const original = btn.textContent;
-      btn.textContent = '¡Copiado!';
+      const ok = await copiarAlPortapapeles(btn.dataset.link);
+      btn.textContent = ok ? '¡Copiado!' : 'No se pudo copiar';
       setTimeout(() => btn.textContent = original, 1200);
     });
   });
