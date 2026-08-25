@@ -5,7 +5,7 @@
  */
 
 const SHEET_NAME = 'Invitados';
-const ADMIN_KEY  = 'CAMBIA-ESTA-CLAVE-123'; // <-- cámbiala aquí y en js/admin.js
+const ADMIN_KEY  = 'maria123'; // <-- debe coincidir EXACTO con js/config.js
 const HEADERS = ['ID','Nombre','CuposAsignados','CuposConfirmados','Asistencia','Mensaje','FechaConfirmacion','FechaCreacion'];
 
 function getSheet_() {
@@ -30,14 +30,6 @@ function rowToObj_(headers, row) {
   return obj;
 }
 
-function findRowIndexById_(sheet, id) {
-  const data = sheet.getDataRange().getValues();
-  for (let i = 1; i < data.length; i++) {
-    if (String(data[i][0]) === String(id)) return i + 1; // fila real (1-indexed, +header)
-  }
-  return -1;
-}
-
 /* ---------------- GET ---------------- */
 function doGet(e) {
   try {
@@ -60,7 +52,7 @@ function doGet(e) {
             cuposConfirmados: g.CuposConfirmados,
             asistencia: g.Asistencia,
             mensaje: g.Mensaje,
-            yaConfirmo: g.Asistencia !== '' && g.Asistencia !== undefined
+            yaConfirmo: g.Asistencia === 'Si' || g.Asistencia === 'No'
           });
         }
       }
@@ -75,7 +67,7 @@ function doGet(e) {
       return jsonOut_({ ok: true, invitados: rows });
     }
 
-    return jsonOut_({ ok: false, error: 'Acción no reconocida' });
+    return jsonOut_({ ok: false, error: 'Acción no reconocida (GET): ' + action });
   } catch (err) {
     return jsonOut_({ ok: false, error: String(err) });
   }
@@ -99,9 +91,42 @@ function doPost(e) {
       return jsonOut_({ ok: true, id: id });
     }
 
+    if (action === 'crearMasivo') {
+      if (body.key !== ADMIN_KEY) return jsonOut_({ ok: false, error: 'Clave inválida' });
+      const invitados = body.invitados;
+      if (!Array.isArray(invitados) || invitados.length === 0) {
+        return jsonOut_({ ok: false, error: 'La lista de invitados está vacía' });
+      }
+
+      const fecha = new Date();
+      const creados = [];
+      const filas = [];
+
+      invitados.forEach(inv => {
+        const nombre = (inv.nombre || '').trim();
+        const cupos = Number(inv.cupos) || 1;
+        if (!nombre) return;
+
+        const id = Utilities.getUuid().split('-')[0] + Math.floor(Math.random() * 90 + 10);
+        filas.push([id, nombre, cupos, '', '', '', '', fecha]);
+        creados.push({ id: id, nombre: nombre, cupos: cupos });
+      });
+
+      if (filas.length === 0) return jsonOut_({ ok: false, error: 'No se encontró ningún nombre válido' });
+
+      const startRow = sheet.getLastRow() + 1;
+      sheet.getRange(startRow, 1, filas.length, HEADERS.length).setValues(filas);
+
+      return jsonOut_({ ok: true, creados: creados });
+    }
+
     if (action === 'eliminar') {
       if (body.key !== ADMIN_KEY) return jsonOut_({ ok: false, error: 'Clave inválida' });
-      const rowIndex = findRowIndexById_(sheet, body.id);
+      const data = sheet.getDataRange().getValues();
+      let rowIndex = -1;
+      for (let i = 1; i < data.length; i++) {
+        if (String(data[i][0]) === String(body.id)) { rowIndex = i + 1; break; }
+      }
       if (rowIndex === -1) return jsonOut_({ ok: false, error: 'No encontrado' });
       sheet.deleteRow(rowIndex);
       return jsonOut_({ ok: true });
@@ -113,25 +138,34 @@ function doPost(e) {
       let cuposUsados = Number(body.cuposUsados) || 0;
       const mensaje = body.mensaje || '';
 
-      const rowIndex = findRowIndexById_(sheet, id);
+      // Una sola lectura de toda la hoja para ubicar al invitado (más rápido que buscar y luego releer)
+      const data = sheet.getDataRange().getValues();
+      let rowIndex = -1;
+      for (let i = 1; i < data.length; i++) {
+        if (String(data[i][0]) === String(id)) { rowIndex = i + 1; break; }
+      }
       if (rowIndex === -1) return jsonOut_({ ok: false, error: 'Invitado no encontrado' });
 
-      const cuposAsignados = Number(sheet.getRange(rowIndex, 3).getValue()) || 1;
+      const filaActual = data[rowIndex - 1];
+      const asistenciaActual = filaActual[4];
+      if (asistenciaActual === 'Si' || asistenciaActual === 'No') {
+        return jsonOut_({ ok: false, error: 'Ya habías confirmado tu asistencia anteriormente.' });
+      }
+
+      const cuposAsignados = Number(filaActual[2]) || 1;
       if (asistencia === 'Si') {
         cuposUsados = Math.max(1, Math.min(cuposUsados, cuposAsignados));
       } else {
         cuposUsados = 0;
       }
 
-      sheet.getRange(rowIndex, 4).setValue(cuposUsados);      // CuposConfirmados
-      sheet.getRange(rowIndex, 5).setValue(asistencia);       // Asistencia
-      sheet.getRange(rowIndex, 6).setValue(mensaje);          // Mensaje
-      sheet.getRange(rowIndex, 7).setValue(new Date());       // FechaConfirmacion
+      // Una sola escritura de las 4 columnas juntas (más rápido que 4 setValue separados)
+      sheet.getRange(rowIndex, 4, 1, 4).setValues([[cuposUsados, asistencia, mensaje, new Date()]]);
 
       return jsonOut_({ ok: true, cuposUsados: cuposUsados });
     }
 
-    return jsonOut_({ ok: false, error: 'Acción no reconocida' });
+    return jsonOut_({ ok: false, error: 'Acción no reconocida (POST): ' + action });
   } catch (err) {
     return jsonOut_({ ok: false, error: String(err) });
   }
